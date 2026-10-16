@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img" aria-labelledby="title desc">
+  <title id="title">SKULLTRACE snake emblem</title>
+  <desc id="desc">An original neon turquoise serpent coiled around a grinning skull with a visible smile and teeth on a dark background.</desc>
+  <defs>
+    <linearGradient id="snake" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5ef2d0"/>
+      <stop offset="1" stop-color="#00a6a6"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#111827"/>
+      <stop offset="1" stop-color="#030712"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="300" height="300" rx="54" fill="url(#panel)" stroke="#164e63" stroke-width="3"/>
+  <circle cx="160" cy="153" r="105" fill="none" stroke="#123744" stroke-width="2" stroke-dasharray="4 9"/>
+  <path d="M90 97 C58 119 57 173 88 196 C110 213 139 210 147 191 C154 174 134 160 119 171 C105 181 94 171 95 154 C97 133 117 124 136 136 C163 153 183 188 211 181 C238 174 252 143 238 119 C227 99 203 93 185 105" fill="none" stroke="url(#snake)" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M184 105 C173 91 175 72 193 63 C211 54 235 67 235 85 C235 101 221 112 208 113 L201 128" fill="none" stroke="url(#snake)" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M229 78 L250 69 L238 91" fill="#5ef2d0" stroke="#5ef2d0" stroke-linejoin="round"/>
+  <path d="M221 86 L226 85" stroke="#03151b" stroke-width="4" stroke-linecap="round"/>
+  <path d="M126 124 C126 110 137 102 151 103 C160 104 169 111 170 123 L179 145 C184 156 179 172 169 179 L169 197 L151 197 L146 188 L135 197 L119 192 L121 174 C108 163 108 146 117 136 Z" fill="#dce8ec" stroke="#5ef2d0" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M123 139 L144 144 L139 160 L124 160 Z M151 144 L170 139 L169 160 L154 160 Z" fill="#06131a"/>
+  <path d="M128 172 Q151 198 173 172 L170 190 Q151 204 132 190 Z" fill="#06131a"/>
+  <path d="M138 183 L138 194 M148 188 L148 199 M158 188 L158 199 M168 182 L168 192" stroke="#dce8ec" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M73 227 H247" stroke="#164e63" stroke-width="2"/>
+  <text x="160" y="253" fill="#e6fffb" font-family="monospace" font-size="20" font-weight="700" text-anchor="middle" letter-spacing="2">SKULLTRACE</text>
+  <text x="160" y="274" fill="#5ef2d0" font-family="monospace" font-size="9" text-anchor="middle" letter-spacing="2">SNAKE INTELLIGENCE</text>
+</svg>
