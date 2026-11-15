@@ -57,6 +57,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     hash_parser = subparsers.add_parser("hash", help="calculate hashes for a local file")
     hash_parser.add_argument("path", help="path to a regular file")
+    hash_parser.add_argument("--check-sha256", metavar="DIGEST", help="compare the local file SHA-256 with DIGEST")
     _add_output_options(hash_parser)
 
     local_parser = subparsers.add_parser("local-info", help="show local host and runtime metadata")
@@ -183,7 +184,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     elif args.command == "domain":
         report = analyze_domain(args.hostname)
     elif args.command == "hash":
-        report = analyze_file_hash(args.path)
+        report = analyze_file_hash(args.path, args.check_sha256)
     elif args.command == "local-info":
         report = analyze_local_info()
     elif args.command == "case-note":
