@@ -176,6 +176,8 @@ skulltrace dns example.com --output reports/dns-report.json
 skulltrace url 'https://example.com' --json --output reports/url-report.json
 ```
 
+`--check-sha256` compares the locally calculated digest with a 64-character hexadecimal reference. A match returns status `ok`; a mismatch is reported as `mismatch` and exits with code `1`. Invalid digest text is rejected. The selected file is read in bounded chunks and is never changed or uploaded.
+
 For commands that perform analysis, a non-zero exit status can indicate that the input could not be analyzed successfully. Check the printed report and error message.
 
 ## 🗂️ Project structure
