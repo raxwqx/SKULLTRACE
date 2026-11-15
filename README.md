@@ -142,6 +142,7 @@ skulltrace domain example.com
 
 # Hash a file on your own machine
 skulltrace hash ./sample.bin
+skulltrace hash ./evidence.bin --check-sha256 YOUR_64_HEX_SHA256
 
 # Show local system/runtime metadata
 skulltrace local-info
