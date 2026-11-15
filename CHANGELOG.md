@@ -1,5 +1,15 @@
 # Changelog
 
+## [5.0.0] - 2026-11-15
+
+### Added
+- Added `hash --check-sha256` to verify a local file against a supplied SHA-256 digest.
+- Reports distinguish matching, mismatching, and invalid digest input.
+
+### Changed
+- Updated package and report version to 5.0.0.
+
+
 Notable changes to SKULLTRACE are documented here.
 
 ## [0.2.0] - 2026-10-16
