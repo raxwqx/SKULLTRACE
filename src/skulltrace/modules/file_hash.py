@@ -13,8 +13,15 @@ _CHUNK_SIZE = 1024 * 1024
 
 def analyze_file_hash(value: str) -> dict[str, Any]:
     """Hash a user-selected regular file without uploading or modifying it."""
-    path = Path(value).expanduser()
-    display_name = path.name or str(value)
+    try:
+        path = Path(value).expanduser()
+        display_name = path.name or str(value)
+    except (OSError, ValueError, RuntimeError, TypeError) as exc:
+        return create_report(
+            module="hash", target=str(value), status="error", results={},
+            note=f"Could not open the supplied path: {exc}",
+        )
+
     try:
         if not path.exists():
             raise FileNotFoundError("File does not exist.")
@@ -31,7 +38,7 @@ def analyze_file_hash(value: str) -> dict[str, Any]:
                 size += len(chunk)
                 for digest in digests.values():
                     digest.update(chunk)
-    except (OSError, ValueError) as exc:
+    except (OSError, ValueError, RuntimeError) as exc:
         return create_report(
             module="hash", target=display_name, status="error", results={},
             note=f"Could not hash file: {exc}",

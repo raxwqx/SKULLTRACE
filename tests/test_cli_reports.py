@@ -9,6 +9,7 @@ from pathlib import Path
 
 from skulltrace.cli import main
 from skulltrace.core.reports import create_report, write_report
+from skulltrace.ui.console import print_report
 
 
 class CLIAndReportTests(unittest.TestCase):
@@ -34,6 +35,22 @@ class CLIAndReportTests(unittest.TestCase):
             path = write_report(report, Path(directory) / "nested" / "report.json")
             loaded = json.loads(path.read_text(encoding="utf-8"))
         self.assertEqual(loaded["results"]["value"], 1)
+
+    def test_report_write_replaces_existing_file_without_leftovers(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "report.json"
+            path.write_text("old contents", encoding="utf-8")
+            write_report(create_report("test", "example", "ok", {"value": 2}, "unit test"), path)
+            self.assertEqual(json.loads(path.read_text(encoding="utf-8"))["results"]["value"], 2)
+            self.assertEqual(list(Path(directory).glob(".skulltrace-report-*")), [])
+
+    def test_console_strips_terminal_control_sequences(self):
+        report = create_report("test", "bad\x1b[31mtarget", "ok", {"value": "x\x1b[0m"}, "note")
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            print_report(report)
+        self.assertNotIn("\x1b", buffer.getvalue())
+        self.assertIn("target", buffer.getvalue())
 
 
 if __name__ == "__main__":

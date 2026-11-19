@@ -10,6 +10,6 @@ Please do not publish exploitable details, credentials, access tokens, or person
 
 ## Scope and design
 
-SKULLTRACE is designed for transparent, low-impact research. The current DNS module performs hostname resolution through the operating system's configured resolver. The IP module classifies an address locally and does not contact a third-party intelligence service. New modules should document any network requests, data sent, sources used, rate limits, and privacy considerations before implementation.
+SKULLTRACE is designed for transparent, low-impact research. The DNS module performs hostname resolution through the operating system's configured resolver. The IP module classifies an address locally and does not contact a third-party intelligence service. The checksum verification module reads a local file and compares its SHA-256 digest with a user-supplied reference; it does not contact a network service. A matching digest is not a statement about the trustworthiness of the reference itself. New modules should document any network requests, data sent, sources used, rate limits, and privacy considerations before implementation.
 
 SKULLTRACE must not be extended to facilitate unauthorized account access, credential theft, stalking, covert tracking, or collection of private personal information.

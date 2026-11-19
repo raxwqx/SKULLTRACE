@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+from skulltrace import __version__
+
 APP_NAME = "SKULLTRACE"
 DEFAULT_REPORT_DIR = Path("reports")
-USER_AGENT = "SKULLTRACE/0.2.0 (low-impact OSINT research)"
+USER_AGENT = f"SKULLTRACE/{__version__} (low-impact OSINT research)"

@@ -9,7 +9,7 @@ State a narrow, lawful research question.
 - Exclusions:
 
 ## Method
-Describe the specific SKULLTRACE module and data source. Note any network requests and third parties that may receive the target.
+Describe the specific SKULLTRACE module and data source. Note any network requests and third parties that may receive the target. When verifying a file, record how the reference SHA-256 digest was obtained and why that source is trusted.
 
 ## Observations
 Record only relevant output. Redact personal or confidential data.

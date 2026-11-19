@@ -2,6 +2,27 @@
 
 Notable changes to SKULLTRACE are documented here.
 
+## [0.3.0] - 2026-11-19
+
+### Added
+- `verify PATH --sha256 DIGEST` checks a local file against a trusted SHA-256 reference with constant-time comparison. It accepts uppercase digests and an optional `sha256:` prefix.
+- Interactive menu option **[9] Verify SHA-256** for the same local-only check.
+- Reports distinguish a match (`ok`) from a mismatch (`mismatch`) and include the expected and actual digests.
+
+### Fixed
+- Report files are now written atomically, so an interrupted write cannot truncate an existing report. Unwritable paths, invalid home-directory expansion and other path errors return a clear message instead of a traceback.
+- URL reports now use the normalized hostname, keeping the report target consistent with the parsed hostname for trailing-dot and internationalized names.
+- URLs with control characters are rejected, and malformed percent escapes in URL paths are flagged. Human-readable output strips terminal control sequences from untrusted values.
+- Hostnames ending in more than one dot are rejected instead of silently normalized.
+- Hashing a path with an unresolvable `~user` expansion returns an error report instead of crashing.
+- Local hostname addresses are sorted numerically by IP family instead of as raw strings.
+- Case notes reject terminal control characters while still allowing line breaks and tabs in observations.
+- README repository links now point to `raxwqx/SKULLTRACE` instead of the old `SKULLTRACE-` name, and the user agent follows the package version automatically.
+
+### Changed
+- Expanded the automated test workflow to Ubuntu, Windows and macOS across Python 3.10-3.13.
+- Added Turkish documentation alongside the English README.
+
 ## [0.2.0] - 2026-10-16
 
 ### Added

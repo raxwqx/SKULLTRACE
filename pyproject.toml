@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "skulltrace"
-version = "0.2.0"
+version = "0.3.0"
 description = "A modular, low-impact OSINT command-line workbench"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
 authors = [{ name = "SKULLTRACE Contributors" }]
-keywords = ["osint", "dns", "network-intelligence", "security-research"]
+keywords = ["osint", "dns", "network-intelligence", "security-research", "file-integrity", "sha256"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Environment :: Console",

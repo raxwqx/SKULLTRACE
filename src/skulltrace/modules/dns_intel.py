@@ -16,7 +16,9 @@ def normalize_hostname(value: str) -> str:
     """Validate and normalize a hostname; URLs and raw IP addresses are rejected."""
     if not isinstance(value, str):
         raise ValueError("Hostname must be text.")
-    candidate = value.strip().rstrip(".")
+    candidate = value.strip()
+    if candidate.endswith("."):
+        candidate = candidate[:-1]
     if not candidate:
         raise ValueError("Enter a hostname such as example.com.")
     if any(char in candidate for char in "/\\?#@") or ":" in candidate:
