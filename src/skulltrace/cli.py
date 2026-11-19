@@ -7,8 +7,9 @@ import sys
 from typing import Sequence
 
 from skulltrace import __version__
-from skulltrace.core.reports import report_to_json, write_report
+from skulltrace.core.reports import ReportWriteError, report_to_json, write_report
 from skulltrace.modules.case_notes import create_case_note
+from skulltrace.modules.checksum_verify import verify_file_sha256
 from skulltrace.modules.dns_intel import analyze_hostname
 from skulltrace.modules.domain_intel import analyze_domain
 from skulltrace.modules.email_intel import analyze_email
@@ -59,6 +60,18 @@ def build_parser() -> argparse.ArgumentParser:
     hash_parser.add_argument("path", help="path to a regular file")
     _add_output_options(hash_parser)
 
+    verify_parser = subparsers.add_parser(
+        "verify", help="verify a local file against a SHA-256 reference"
+    )
+    verify_parser.add_argument("path", help="path to a regular file")
+    verify_parser.add_argument(
+        "--sha256",
+        required=True,
+        metavar="DIGEST",
+        help="trusted 64-character hexadecimal SHA-256 reference; a sha256: prefix is accepted",
+    )
+    _add_output_options(verify_parser)
+
     local_parser = subparsers.add_parser("local-info", help="show local host and runtime metadata")
     _add_output_options(local_parser)
 
@@ -76,8 +89,8 @@ def _display(report: dict, as_json: bool, output: str | None) -> int:
     if output:
         try:
             written = write_report(report, output)
-        except OSError as exc:
-            print(f"SKULLTRACE: could not write report: {exc}", file=sys.stderr)
+        except ReportWriteError as exc:
+            print(f"SKULLTRACE: {exc}", file=sys.stderr)
             return 2
         if not as_json:
             print(f"JSON report saved to: {written}")
@@ -96,7 +109,7 @@ def _interactive_report(report: dict) -> None:
         try:
             written = write_report(report, destination)
             print(f"  Report saved: {written}\n")
-        except OSError as exc:
+        except ReportWriteError as exc:
             print(f"  Could not save report: {exc}\n")
 
 
@@ -116,7 +129,8 @@ def _run_interactive() -> int:
         print("  [6] File fingerprint       SHA-256 / SHA-1 / MD5")
         print("  [7] Local machine info     Host/runtime snapshot")
         print("  [8] Case note              Structured observation report")
-        print("  [9] About & safety")
+        print("  [9] Verify SHA-256         Compare a file with a trusted digest")
+        print("  [10] About & safety")
         print("  [0] Exit")
         try:
             choice = input("\n  skulltrace > ").strip().lower()
@@ -142,15 +156,20 @@ def _run_interactive() -> int:
                 observation = input("  Observation: ").strip()
                 report = create_case_note(case_name, observation)
             elif choice == "9":
+                path = input("  File path: ").strip()
+                digest = input("  Trusted SHA-256: ").strip()
+                report = verify_file_sha256(path, digest)
+            elif choice == "10":
                 print("\n  SKULLTRACE is built for low-impact learning and authorized research.")
                 print("  DNS uses your configured system resolver.")
                 print("  IP, domain, email and URL syntax checks do not contact the target.")
-                print("  File hashes are calculated locally; files are not uploaded or changed.")
+                print("  File hashes and SHA-256 verification are calculated locally; files are not uploaded or changed.")
+                print("  A matching digest is only as trustworthy as the reference you supplied.")
                 print("  Avoid unnecessary personal data and never treat a hint as proof.\n")
                 input("  Press Enter to return to the menu...")
                 continue
             else:
-                print("  Unknown option. Choose 0-9.\n")
+                print("  Unknown option. Choose 0-10.\n")
                 continue
             _interactive_report(report)
         except (EOFError, KeyboardInterrupt):
@@ -168,7 +187,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         print_banner()
         print("SKULLTRACE is a low-impact OSINT and local-analysis workbench.")
         print("DNS resolution uses the system resolver; URL inspection never fetches pages.")
-        print("IP, domain and email checks are syntax/local analysis; file hashes stay local.")
+        print("IP, domain and email checks are syntax/local analysis; file hashes and SHA-256 verification stay local.")
         print("Use only for lawful research and authorized targets.")
         return 0
 
@@ -184,6 +203,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         report = analyze_domain(args.hostname)
     elif args.command == "hash":
         report = analyze_file_hash(args.path)
+    elif args.command == "verify":
+        report = verify_file_sha256(args.path, args.sha256)
     elif args.command == "local-info":
         report = analyze_local_info()
     elif args.command == "case-note":

@@ -11,6 +11,10 @@ class HostnameValidationTests(unittest.TestCase):
     def test_normalizes_case_and_trailing_dot(self):
         self.assertEqual(normalize_hostname(" Example.COM. "), "example.com")
 
+    def test_rejects_multiple_trailing_dots(self):
+        with self.assertRaises(ValueError):
+            normalize_hostname("example.com..")
+
     def test_encodes_internationalized_domain(self):
         self.assertEqual(normalize_hostname("bücher.example"), "xn--bcher-kva.example")
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ipaddress
+import re
 from typing import Any
 from urllib.parse import urlsplit, urlunsplit
 
@@ -11,21 +12,15 @@ from skulltrace.modules.dns_intel import normalize_hostname
 
 _ALLOWED_SCHEMES = {"http", "https"}
 _DEFAULT_PORTS = {"http": 80, "https": 443}
+_CONTROL_RE = re.compile(r"[\x00-\x1f\x7f-\x9f]")
+_BAD_PERCENT_RE = re.compile(r"%(?![0-9A-Fa-f]{2})")
 
 
-def _safe_target(parts) -> str:
+def _safe_target(parts, host: str, is_ip_literal: bool) -> str:
     """Build a report target that omits credentials, query strings and fragments."""
-    host = parts.hostname or ""
-    try:
-        ipaddress.ip_address(host)
-        if ":" in host:
-            host = f"[{host}]"
-    except ValueError:
-        pass
-    try:
-        port = parts.port
-    except ValueError:
-        port = None
+    if is_ip_literal and ":" in host:
+        host = f"[{host}]"
+    port = parts.port
     netloc = host if port is None else f"{host}:{port}"
     return urlunsplit((parts.scheme.lower(), netloc, parts.path or "/", "", ""))
 
@@ -40,6 +35,8 @@ def analyze_url(value: str) -> dict[str, Any]:
             raise ValueError("Use a complete http:// or https:// URL.")
         if not parts.hostname:
             raise ValueError("URL must contain a hostname.")
+        if _CONTROL_RE.search(raw):
+            raise ValueError("URL must not contain control characters.")
         if any(ch.isspace() for ch in raw):
             raise ValueError("URL must not contain whitespace.")
         hostname = parts.hostname
@@ -70,14 +67,16 @@ def analyze_url(value: str) -> dict[str, Any]:
         flags.append("Hostname uses an IDN punycode label; verify the intended spelling.")
     if is_ip_literal:
         flags.append("URL uses an IP literal instead of a domain name.")
-    if "%" in parts.path:
+    if _BAD_PERCENT_RE.search(parts.path):
+        flags.append("Path contains a malformed percent escape; parsers may interpret it differently.")
+    elif "%" in parts.path:
         flags.append("Path contains percent-encoded characters; inspect the decoded meaning carefully.")
     if "\\" in raw:
         flags.append("URL contains a backslash; browser parsing can differ across contexts.")
     if not flags:
         flags.append("No listed syntactic warning signs detected. This is not a safety verdict.")
 
-    report_target = _safe_target(parts)
+    report_target = _safe_target(parts, normalized_host, is_ip_literal)
     results = {
         "scheme": scheme,
         "hostname": normalized_host,
